@@ -54,11 +54,29 @@ namespace CCMessageWindow {
         for (auto unit : units) {
             auto label = this->createLabelWithUnit(unit);
             this->addChild(label);
-            auto width = 64;
-            // 今は固定で1列に並ぶ
-            label->setPosition(Vec2(width * index, 0));
+            auto pos = this->getPositionByIndex(index);
+            label->setPosition(pos);
             ++index;
         }
+    }
+    
+    cocos2d::Vec2 MessageWindow::getPositionByIndex(int index)
+    {
+        // FIX ME 実際の_widthより広いエリアに描画されてしまう
+        auto units = _queue->getCurrentUnits();
+        int x = 0;
+        int y = 0;
+        for (int i = 0; i < index; ++i) {
+            auto unit = units.at(i);
+            x += unit->getFontSize();
+            if (_width > 0 && x > _width) {
+                // line breal;
+                x = 0;
+                // TODO フォントサイズが全て同じという前提に成り立っている
+                y -= unit->getFontSize();
+            }
+        }
+        return Vec2(x, y);
     }
     
     cocos2d::Label * MessageWindow::createLabelWithUnit(CCMessageWindow::Unit *unit)
@@ -66,7 +84,7 @@ namespace CCMessageWindow {
         auto text = unit->getText();
         std::string utf8String;
         StringUtils::UTF16ToUTF8(unit->getText(), utf8String);
-        auto label = Label::createWithSystemFont(utf8String.c_str(), unit->getFontName(), 64);
+        auto label = Label::createWithSystemFont(utf8String.c_str(), unit->getFontName(), unit->getFontSize());
         return label;
     }
     

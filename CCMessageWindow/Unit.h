@@ -23,6 +23,7 @@ namespace CCMessageWindow {
         
         CC_SYNTHESIZE(std::u16string, _text, Text);
         CC_SYNTHESIZE(std::string, _fontName, FontName);
+        CC_SYNTHESIZE(float, _fontSize, FontSize);
         CC_SYNTHESIZE(cocos2d::Color3B, _color, Color);
         CREATE_FUNC(Unit);
     };

@@ -21,9 +21,11 @@ namespace CCMessageWindow {
     private:
         void renderUnits(cocos2d::Vector<Unit *> units);
         cocos2d::Label * createLabelWithUnit(Unit *unit);
+        cocos2d::Vec2 getPositionByIndex(int index);
     public:
         void updateMessage();
         void update(float dt) override;
+        CC_SYNTHESIZE(float, _width, Width);
         CC_SYNTHESIZE_RETAIN(MessageQueue *, _queue, Queue);
         CREATE_FUNC(MessageWindow);
     };

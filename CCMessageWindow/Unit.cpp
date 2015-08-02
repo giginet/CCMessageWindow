@@ -18,6 +18,7 @@ namespace CCMessageWindow {
     : _text()
     , _fontName("Helvetica")
     , _color(Color3B::WHITE)
+    , _fontSize(64) // FIX ME
     {
         
     }
