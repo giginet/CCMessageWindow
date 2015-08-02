@@ -44,7 +44,7 @@ namespace CCMessageWindow {
     void MessageWindow::updateMessage()
     {
         this->removeAllChildren();
-        auto units = Unit::parseUnits(_queue->getCurrentMessage().c_str());
+        auto units = _queue->getCurrentUnits();
         this->renderUnits(units);
     }
     

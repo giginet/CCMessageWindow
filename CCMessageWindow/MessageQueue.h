@@ -21,29 +21,34 @@ namespace CCMessageWindow {
     private:
         void onMessageFinished();
         void onMessageUpdated();
-        void update(float dt);
-        void updateNextMessage(cocos2d::Ref * sender);
-        void updateNextText(cocos2d::Ref * sender);
+        void updateQueue();
+        void updateNextMessage();
+        void updateNextText();
         
-        cocos2d::Vector<Unit *> _currentUnits;
-        
+        cocos2d::Vector<Unit *> _currentWholeUnits;
+        void scheduleUpdateText();
+        void scheduleUpdateMessage();
+        long getCurrentMessageLength();
     public:
         void pushMessage(const char* message);
-        void setMessageSpeed(float speed);
         std::string getCurrentWholeMessage();
         std::string getCurrentMessage();
-        
-        void start();
-        void stop();
+        cocos2d::Vector<Unit *> getCurrentUnits();
         
         void finishMessage();
         
+        bool isEndOfMessage();
+        bool isEnd();
+        
+        void start();
+        void nextMessage();
+        
         CC_SYNTHESIZE(int, _textSpeed, TextSpeed);
-        CC_SYNTHESIZE(float, _messageDuration, MessageDuration);
+        CC_SYNTHESIZE(float, _textDuration, TextDuration);
+        CC_SYNTHESIZE(float, _messageDelay, MessageDelay);
         CC_SYNTHESIZE(bool, _enabled, Enabled);
-        CC_SYNTHESIZE_PASS_BY_REF(std::vector<std::string>, _messages, Messages);
         CC_SYNTHESIZE_READONLY(int, _textIndex, TextIndex);
-        CC_SYNTHESIZE_READONLY(int, _messageIndex, MessageIndex);
+        CC_SYNTHESIZE_PASS_BY_REF(std::vector<std::string>, _messages, Messages);
         CC_SYNTHESIZE_RETAIN(cocos2d::Label *, _label, Label);
         CREATE_FUNC(MessageQueue);
     };
