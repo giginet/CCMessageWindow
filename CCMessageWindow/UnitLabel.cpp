@@ -1,9 +1,9 @@
 //
-//  MessageWindow.cpp
+//  UnitLabel.cpp
 //  CCMessageWindow
 //
 //  Created by giginet on 8/2/15.
 //
 //
 
-#include "MessageWindow.h"
+#include "UnitLabel.h"
