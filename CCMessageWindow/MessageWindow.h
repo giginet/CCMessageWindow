@@ -9,6 +9,24 @@
 #ifndef __CCMessageWindow__MessageWindow__
 #define __CCMessageWindow__MessageWindow__
 
-#include <stdio.h>
+#include "MessageQueue.h"
+
+namespace CCMessageWindow {
+    class MessageWindow :public cocos2d::Node
+    {
+    CC_CONSTRUCTOR_ACCESS:
+        bool init() override;
+        MessageWindow();
+        virtual ~MessageWindow();
+    private:
+        void renderUnits(cocos2d::Vector<Unit *> units);
+        cocos2d::Label * createLabelWithUnit(Unit *unit);
+    public:
+        void updateMessage();
+        void update(float dt) override;
+        CC_SYNTHESIZE_RETAIN(MessageQueue *, _queue, Queue);
+        CREATE_FUNC(MessageWindow);
+    };
+}
 
 #endif /* defined(__CCMessageWindow__MessageWindow__) */

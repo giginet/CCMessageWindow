@@ -9,16 +9,40 @@
 #include "MessageQueue.h"
 #include <sstream>
 
-const int kMAX_MESSAGE_QUEUE = 6;
-
-const float kDefaultMessageWindowDelay = 0.75f;
-const float kDefaultMessageWindowLastDelay = 2.0f;
-const float kDefaultMessageWindowSpeed = 1.0f / 60.0f;
-
 USING_NS_CC;
 
 namespace CCMessageWindow {
 
+    MessageQueue::MessageQueue()
+    {
+        
+    }
+    
+    MessageQueue::~MessageQueue()
+    {
+        
+    }
+    
+    bool MessageQueue::init()
+    {
+        return true;
+    }
+    
+    void MessageQueue::pushMessage(const char *message)
+    {
+        _messages.push_back(message);
+    }
+    
+    std::string MessageQueue::getCurrentMessage()
+    {
+        // TODO
+        return _messages.front();
+    }
+    
+    std::string MessageQueue::getCurrentWholeMessage()
+    {
+        return _messages.front();
+    }
     
     
 }
