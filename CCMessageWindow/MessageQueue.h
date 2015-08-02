@@ -25,6 +25,7 @@ namespace CCMessageWindow {
         void updateNextText();
         
         float _remainTime;
+        bool _endMessage;
         
         cocos2d::Vector<Unit *> _currentWholeUnits;
         long getCurrentMessageLength();
@@ -48,7 +49,7 @@ namespace CCMessageWindow {
         CC_SYNTHESIZE(float, _messageDelay, MessageDelay);
         CC_SYNTHESIZE(bool, _enabled, Enabled);
         CC_SYNTHESIZE_READONLY(int, _textIndex, TextIndex);
-        CC_SYNTHESIZE_PASS_BY_REF(std::vector<std::string>, _messages, Messages);
+        CC_SYNTHESIZE_PASS_BY_REF(std::queue<std::string>, _messages, Messages);
         CC_SYNTHESIZE_RETAIN(cocos2d::Label *, _label, Label);
         CREATE_FUNC(MessageQueue);
     };

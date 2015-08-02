@@ -18,6 +18,7 @@ namespace CCMessageWindow {
     , _remainTime(0)
     , _textDuration(0.2)
     , _messageDelay(1.0)
+    , _endMessage(false)
     , _enabled(false)
     , _label(nullptr)
     {
@@ -41,7 +42,8 @@ namespace CCMessageWindow {
         if (!_enabled) return;
         _remainTime -= dt;
         if (_remainTime < 0) {
-            if (this->isEndOfMessage()) {
+            if (_endMessage) {
+                _endMessage = false;
                 // 次のメッセージ
                 this->updateNextMessage();
             } else if (!_messages.empty()) {
@@ -55,7 +57,7 @@ namespace CCMessageWindow {
     
     void MessageQueue::pushMessage(const char *message)
     {
-        _messages.push_back(message);
+        _messages.push(message);
     }
     
     std::string MessageQueue::getCurrentMessage()
@@ -101,6 +103,7 @@ namespace CCMessageWindow {
             auto message = _messages.front();
             _currentWholeUnits = Unit::parseUnits(message.c_str());
             _remainTime = _textDuration;
+            _textIndex = 0;
         }
     }
     
@@ -108,10 +111,10 @@ namespace CCMessageWindow {
     {
         _textIndex += _textSpeed;
         long maxTextLength = this->getCurrentMessageLength() - 1;
-        log("textIndex = %d", _textIndex);
         if (_textIndex > maxTextLength) {
             // 次のメッセージに
-            _messages.pop_back();
+            _endMessage = true;
+            _messages.pop();
             _textIndex = (int)maxTextLength;
             if (_messageDelay > 0) {
                 _remainTime = _messageDelay;
