@@ -38,7 +38,7 @@ namespace CCMessageWindow {
     
     void MessageWindow::update(float dt)
     {
-        
+        this->updateMessage();
     }
     
     void MessageWindow::updateMessage()

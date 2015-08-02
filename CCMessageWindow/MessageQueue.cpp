@@ -15,9 +15,10 @@ namespace CCMessageWindow {
     MessageQueue::MessageQueue()
     : _textSpeed(1)
     , _textIndex(0)
-    , _textDuration(0.1)
-    , _messageDelay(0)
-    , _enabled(true)
+    , _remainTime(0)
+    , _textDuration(0.2)
+    , _messageDelay(1.0)
+    , _enabled(false)
     , _label(nullptr)
     {
         
@@ -30,7 +31,26 @@ namespace CCMessageWindow {
     
     bool MessageQueue::init()
     {
+        auto scheduler = Director::getInstance()->getScheduler();
+        scheduler->scheduleUpdate(this, 0, false);
         return true;
+    }
+    
+    void MessageQueue::update(float dt)
+    {
+        if (!_enabled) return;
+        _remainTime -= dt;
+        if (_remainTime < 0) {
+            if (this->isEndOfMessage()) {
+                // 次のメッセージ
+                this->updateNextMessage();
+            } else if (!_messages.empty()) {
+                // 次のテキスト
+                this->updateNextText();
+            } else {
+                
+            }
+        }
     }
     
     void MessageQueue::pushMessage(const char *message)
@@ -67,41 +87,37 @@ namespace CCMessageWindow {
         return units;
     }
     
-    void MessageQueue::updateQueue()
-    {
-        if (this->isEnd()) {
-            return;
-        }
-        if (this->isEndOfMessage()) {
-            this->updateNextMessage();
-        } else {
-            this->updateNextText();
-        }
-        
-    }
-    
     void MessageQueue::start()
     {
-        this->updateQueue();
+        _enabled = true;
+        if (_messages.size() > 0 && _currentWholeUnits.empty()) {
+            this->updateNextMessage();
+        }
     }
     
     void MessageQueue::updateNextMessage()
     {
-        
-        _currentWholeUnits = Unit::parseUnits(message);
+        if (!_messages.empty()) {
+            auto message = _messages.front();
+            _currentWholeUnits = Unit::parseUnits(message.c_str());
+            _remainTime = _textDuration;
+        }
     }
     
     void MessageQueue::updateNextText()
     {
         _textIndex += _textSpeed;
         long maxTextLength = this->getCurrentMessageLength() - 1;
+        log("textIndex = %d", _textIndex);
         if (_textIndex > maxTextLength) {
+            // 次のメッセージに
+            _messages.pop_back();
             _textIndex = (int)maxTextLength;
             if (_messageDelay > 0) {
-                this->updateNextMessage();
+                _remainTime = _messageDelay;
             }
         } else {
-            this->scheduleUpdateText();
+            _remainTime = _textDuration;
         }
     }
     
@@ -114,34 +130,6 @@ namespace CCMessageWindow {
     bool MessageQueue::isEnd()
     {
         return _messages.empty();
-    }
-    
-    void MessageQueue::scheduleUpdateText()
-    {
-        auto scheduler = Director::getInstance()->getScheduler();
-        scheduler->schedule([this](float dt) {
-            this->updateNextText();
-        }, 
-                            this, 
-                            0, 
-                            0, 
-                            _textDuration, 
-                            false, 
-                            "updateNextText");
-    }
-    
-    void MessageQueue::scheduleUpdateMessage()
-    {
-        auto scheduler = Director::getInstance()->getScheduler();
-        scheduler->schedule([this](float dt) {
-            this->updateNextMessage();
-        }, 
-                            this, 
-                            0, 
-                            0, 
-                            _messageDelay, 
-                            false, 
-                            "updateNextMessage");
     }
     
     void MessageQueue::nextMessage()

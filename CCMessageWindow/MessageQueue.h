@@ -21,13 +21,12 @@ namespace CCMessageWindow {
     private:
         void onMessageFinished();
         void onMessageUpdated();
-        void updateQueue();
         void updateNextMessage();
         void updateNextText();
         
+        float _remainTime;
+        
         cocos2d::Vector<Unit *> _currentWholeUnits;
-        void scheduleUpdateText();
-        void scheduleUpdateMessage();
         long getCurrentMessageLength();
     public:
         void pushMessage(const char* message);
@@ -39,6 +38,7 @@ namespace CCMessageWindow {
         
         bool isEndOfMessage();
         bool isEnd();
+        void update(float dt);
         
         void start();
         void nextMessage();
