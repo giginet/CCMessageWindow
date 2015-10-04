@@ -48,5 +48,4 @@ namespace CCMessageWindow {
         
         return std::move(units);
     }
-    
 }

@@ -86,8 +86,9 @@ namespace CCMessageWindow {
     void MessageQueue::onTextUpdated(int startedIndex, const char *updatedString)
     {
         auto callback = _messageWindow->getOnTextUpdatedCallback();
+        log("%s", updatedString);
         if (callback) {
-            callback(_messageWindow, _textIndex, updatedString);
+            callback(_messageWindow, startedIndex, updatedString);
         }
     }
     

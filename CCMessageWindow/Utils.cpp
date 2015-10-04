@@ -24,4 +24,26 @@ namespace CCMessageWindow {
         return std::move(outUTF8String);
     }
     
+    std::vector<std::string> Utils::split(const std::string &input, char delimiter)
+    {
+        std::istringstream stream(input);
+        std::string field;
+        std::vector<std::string> result;
+        while (std::getline(stream, field, delimiter)) {
+            result.push_back(field);
+        }
+        return result;
+    }
+    
+    std::string Utils::replace(std::string base, std::string src, std::string dst)
+    {
+        std::string::size_type pos(base.find(src));
+        
+        while(pos != std::string::npos) {
+            base.replace(pos, src.length(), dst);
+            pos = base.find(src, pos + dst.length() );
+        }
+        return base;
+    }
+    
 }
