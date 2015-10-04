@@ -12,6 +12,9 @@
 #include "MessageQueue.h"
 
 namespace CCMessageWindow {
+    typedef std::function<void (MessageWindow *, int index, std::string)> CCMessageWindowOnTextUpdatedCallback;
+    typedef std::function<void (MessageWindow *, std::string)> CCMessageWindowOnMessageFinishedCallback;
+    
     class MessageWindow :public cocos2d::Node
     {
     CC_CONSTRUCTOR_ACCESS:
@@ -25,6 +28,8 @@ namespace CCMessageWindow {
     public:
         void updateMessage();
         void update(float dt) override;
+        CC_SYNTHESIZE(CCMessageWindowOnTextUpdatedCallback, _onTextUpdatedCallback, OnTextUpdatedCallback);
+        CC_SYNTHESIZE(CCMessageWindowOnMessageFinishedCallback, _onMessageFinishedCallback, OnMessageFinishedCallback);
         CC_SYNTHESIZE_RETAIN(MessageQueue *, _queue, Queue);
         CREATE_FUNC(MessageWindow);
     };

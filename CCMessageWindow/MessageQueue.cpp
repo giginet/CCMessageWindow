@@ -7,6 +7,8 @@
 //
 
 #include "MessageQueue.h"
+#include "MessageWindow.h"
+#include "Utils.h"
 #include <sstream>
 
 USING_NS_CC;
@@ -22,6 +24,7 @@ namespace CCMessageWindow {
     , _isAutoSeekEnabled(true)
     , _enabled(false)
     , _label(nullptr)
+    , _messageWindow(nullptr)
     {
         
     }
@@ -44,9 +47,7 @@ namespace CCMessageWindow {
         _remainTime -= dt;
         if (_remainTime < 0) {
             if (_endMessage) {
-                if (_isAutoSeekEnabled) {
-                    this->nextMessage();
-                }
+                this->onMessageFinished();
             } else if (!_messages.empty()) {
                 // 次のテキスト
                 this->updateNextText();
@@ -73,12 +74,21 @@ namespace CCMessageWindow {
     
     void MessageQueue::onMessageFinished()
     {
-        
+        auto callback = _messageWindow->getOnMessageFinishedCallback();
+        if (callback) {
+            callback(_messageWindow, this->getCurrentWholeMessage());
+        }
+        if (_isAutoSeekEnabled) {
+            this->nextMessage();
+        }
     }
     
-    void MessageQueue::onMessageUpdated()
+    void MessageQueue::onTextUpdated(int startedIndex, const char *updatedString)
     {
-        
+        auto callback = _messageWindow->getOnTextUpdatedCallback();
+        if (callback) {
+            callback(_messageWindow, _textIndex, updatedString);
+        }
     }
     
     cocos2d::Vector<Unit *> MessageQueue::getCurrentUnits()
@@ -110,7 +120,10 @@ namespace CCMessageWindow {
     
     void MessageQueue::updateNextText()
     {
+        int preIndex = _textIndex;
         _textIndex += _textSpeed;
+        std::string substring = Utils::substringUTF8(this->getCurrentWholeMessage().c_str(), preIndex, _textSpeed);
+        this->onTextUpdated(preIndex, substring.c_str());
         long maxTextLength = this->getCurrentMessageLength() - 1;
         if (_textIndex > maxTextLength) {
             // 次のメッセージに

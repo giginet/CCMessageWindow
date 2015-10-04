@@ -11,16 +11,16 @@ namespace CCMessageWindow {
         
         size_t dataSize = length + 1;
         char16_t *array = static_cast<char16_t *>(malloc(sizeof(char16_t) * dataSize));
-        for (int idx = 0; idx < splitted.size(); ++idx) {
-            *(array + sizeof(char16_t) * idx) = splitted[idx];
+        for (int idx = 0; idx < length; ++idx) {
+            *(array + sizeof(char16_t) * idx) = splitted[from + idx];
         }
-        *(array + length) = 0;
+        *(array + length) = '\0';
         
         std::string outUTF8String;
         std::u16string u16String(array);
         
         cocos2d::StringUtils::UTF16ToUTF8(u16String, outUTF8String);
-        delete array;
+        free(array);
         return std::move(outUTF8String);
     }
     

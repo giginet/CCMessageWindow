@@ -14,6 +14,8 @@ namespace CCMessageWindow {
     
     MessageWindow::MessageWindow()
     : _queue(nullptr)
+    , _onTextUpdatedCallback(nullptr)
+    , _onMessageFinishedCallback(nullptr)
     {
         
     }
@@ -30,6 +32,7 @@ namespace CCMessageWindow {
         }
         auto queue = MessageQueue::create();
         this->setQueue(queue);
+        queue->setMessageWindow(this);
         
         this->scheduleUpdate();
         

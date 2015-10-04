@@ -13,14 +13,18 @@
 #include "Unit.h"
 
 namespace CCMessageWindow {
+    
+    class MessageWindow;
+    
     class MessageQueue :public cocos2d::Ref {
     CC_CONSTRUCTOR_ACCESS:
         MessageQueue();
         virtual ~MessageQueue();
         bool init();
+        CREATE_FUNC(MessageQueue);
     private:
         void onMessageFinished();
-        void onMessageUpdated();
+        void onTextUpdated(int startedIndex, const char* updatedString);
         void updateNextMessage();
         void updateNextText();
         
@@ -30,6 +34,15 @@ namespace CCMessageWindow {
         
         cocos2d::Vector<Unit *> _currentWholeUnits;
         long getCurrentMessageLength();
+        
+        // unsafe_unretained
+        MessageWindow *_messageWindow;
+        
+        void setMessageWindow(MessageWindow *val)
+        {
+            _messageWindow = val;
+        }
+        
     public:
         void pushMessage(const char* message);
         std::string getCurrentWholeMessage();
@@ -62,9 +75,9 @@ namespace CCMessageWindow {
         CC_SYNTHESIZE_READONLY(int, _textIndex, TextIndex);
         CC_SYNTHESIZE_PASS_BY_REF(std::queue<std::string>, _messages, Messages);
         CC_SYNTHESIZE_RETAIN(cocos2d::Label *, _label, Label);
-        CREATE_FUNC(MessageQueue);
+        
+        friend MessageWindow;
     };
-    
 }
 
 #endif /* defined(__CCMessageWindow__MessageQueue__) */
