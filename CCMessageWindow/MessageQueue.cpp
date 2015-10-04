@@ -86,7 +86,6 @@ namespace CCMessageWindow {
     void MessageQueue::onTextUpdated(int startedIndex, const char *updatedString)
     {
         auto callback = _messageWindow->getOnTextUpdatedCallback();
-        log("%s", updatedString);
         if (callback) {
             callback(_messageWindow, startedIndex, updatedString);
         }
@@ -122,11 +121,16 @@ namespace CCMessageWindow {
     void MessageQueue::updateNextText()
     {
         int preIndex = _textIndex;
-        _textIndex += _textSpeed;
-        std::string substring = Utils::substringUTF8(this->getCurrentWholeMessage().c_str(), preIndex, _textSpeed);
+        long maxTextLength = this->getCurrentMessageLength();
+        int speed = _textSpeed;
+        if (_textIndex + _textSpeed > maxTextLength) {
+            speed = (int)maxTextLength - _textIndex;
+        }
+        
+        _textIndex += speed;
+        std::string substring = Utils::substringUTF8(this->getCurrentWholeMessage().c_str(), preIndex, speed);
         this->onTextUpdated(preIndex, substring.c_str());
-        long maxTextLength = this->getCurrentMessageLength() - 1;
-        if (_textIndex > maxTextLength) {
+        if (_textIndex >= maxTextLength) {
             // 次のメッセージに
             _endMessage = true;
             _messages.pop();
