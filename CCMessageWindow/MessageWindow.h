@@ -25,7 +25,6 @@ namespace CCMessageWindow {
     public:
         void updateMessage();
         void update(float dt) override;
-        CC_SYNTHESIZE(float, _width, Width);
         CC_SYNTHESIZE_RETAIN(MessageQueue *, _queue, Queue);
         CREATE_FUNC(MessageWindow);
     };

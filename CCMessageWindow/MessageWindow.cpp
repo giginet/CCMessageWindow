@@ -66,10 +66,11 @@ namespace CCMessageWindow {
         auto units = _queue->getCurrentUnits();
         int x = 0;
         int y = 0;
+        float width = this->getContentSize().width;
         for (int i = 0; i < index; ++i) {
             auto unit = units.at(i);
             x += unit->getFontSize();
-            if (_width > 0 && x > _width) {
+            if (width > 0 && x > width) {
                 // line breal;
                 x = 0;
                 // TODO フォントサイズが全て同じという前提に成り立っている
