@@ -19,6 +19,7 @@ namespace CCMessageWindow {
     , _textDuration(0.2)
     , _messageDelay(1.0)
     , _endMessage(false)
+    , _isAutoSeekEnabled(true)
     , _enabled(false)
     , _label(nullptr)
     {
@@ -43,9 +44,9 @@ namespace CCMessageWindow {
         _remainTime -= dt;
         if (_remainTime < 0) {
             if (_endMessage) {
-                _endMessage = false;
-                // 次のメッセージ
-                this->updateNextMessage();
+                if (_isAutoSeekEnabled) {
+                    this->nextMessage();
+                }
             } else if (!_messages.empty()) {
                 // 次のテキスト
                 this->updateNextText();
@@ -137,7 +138,9 @@ namespace CCMessageWindow {
     
     void MessageQueue::nextMessage()
     {
-        
+        _endMessage = false;
+        // 次のメッセージ
+        this->updateNextMessage();
     }
     
     long MessageQueue::getCurrentMessageLength()

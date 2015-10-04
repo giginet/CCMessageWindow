@@ -26,6 +26,7 @@ namespace CCMessageWindow {
         
         float _remainTime;
         bool _endMessage;
+        bool _isAutoSeekEnabled;
         
         cocos2d::Vector<Unit *> _currentWholeUnits;
         long getCurrentMessageLength();
@@ -43,6 +44,16 @@ namespace CCMessageWindow {
         
         void start();
         void nextMessage();
+        
+        void setIsAutoSeekEnabled(bool val)
+        {
+            _isAutoSeekEnabled = true;
+        }
+        
+        bool isAutoSeekEnabled()
+        {
+            return _isAutoSeekEnabled;
+        }
         
         CC_SYNTHESIZE(int, _textSpeed, TextSpeed);
         CC_SYNTHESIZE(float, _textDuration, TextDuration);
