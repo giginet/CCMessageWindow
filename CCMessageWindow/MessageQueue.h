@@ -56,6 +56,7 @@ namespace CCMessageWindow {
         void update(float dt);
         
         void start();
+        void pause();
         void nextMessage();
         
         void setIsAutoSeekEnabled(bool val)

@@ -108,6 +108,11 @@ namespace CCMessageWindow {
         }
     }
     
+    void MessageQueue::pause()
+    {
+        _enabled = false;
+    }
+    
     void MessageQueue::updateNextMessage()
     {
         if (!_messages.empty()) {
