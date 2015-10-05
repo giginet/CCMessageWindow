@@ -11,6 +11,7 @@
 
 #include "cocos2d.h"
 #include "Unit.h"
+#include "AttributeString.h"
 
 namespace CCMessageWindow {
     
@@ -45,6 +46,8 @@ namespace CCMessageWindow {
         
     public:
         void pushMessage(const char* message);
+        void pushMessage(AttributeString * attributeString);
+        
         std::string getCurrentWholeMessage();
         std::string getCurrentMessage();
         cocos2d::Vector<Unit *> getCurrentUnits();
@@ -73,8 +76,9 @@ namespace CCMessageWindow {
         CC_SYNTHESIZE(float, _textDuration, TextDuration);
         CC_SYNTHESIZE(float, _messageDelay, MessageDelay);
         CC_SYNTHESIZE(bool, _enabled, Enabled);
+        CC_SYNTHESIZE(Attribute, _defaultAttribute, DefaultAttribute);
         CC_SYNTHESIZE_READONLY(int, _textIndex, TextIndex);
-        CC_SYNTHESIZE_PASS_BY_REF(std::queue<std::string>, _messages, Messages);
+        CC_SYNTHESIZE_PASS_BY_REF(cocos2d::Vector<AttributeString *>, _messages, Messages);
         CC_SYNTHESIZE_RETAIN(cocos2d::Label *, _label, Label);
         
         friend MessageWindow;

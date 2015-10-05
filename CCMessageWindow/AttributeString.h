@@ -26,6 +26,8 @@ namespace CCMessageWindow {
         std::string getCharacter(int index);
         Attribute getAttribute(int index);
         Unit * getCharacterUnit(int index);
+        std::string getText();
+        UnitVector getUnitsByCharacters();
     };
 }
 

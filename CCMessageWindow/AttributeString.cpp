@@ -92,4 +92,22 @@ namespace CCMessageWindow {
         return nullptr;
     }
     
+    std::string AttributeString::getText()
+    {
+        std::stringstream ss;
+        for (Unit * unit : _units) {
+            ss << unit->getText();
+        }
+        return ss.str();
+    }
+    
+    UnitVector AttributeString::getUnitsByCharacters()
+    {
+        size_t length = this->getLength();
+        UnitVector units;
+        for (int i = 0; i < length; ++length) {
+            units.pushBack(this->getCharacterUnit(i));
+        }
+        return std::move(units);
+    }
 }

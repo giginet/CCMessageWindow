@@ -26,7 +26,7 @@ namespace CCMessageWindow {
     , _label(nullptr)
     , _messageWindow(nullptr)
     {
-        
+        _defaultAttribute = Attribute::defaultAttribute();
     }
     
     MessageQueue::~MessageQueue()
@@ -59,17 +59,24 @@ namespace CCMessageWindow {
     
     void MessageQueue::pushMessage(const char *message)
     {
-        _messages.push(message);
+        auto attrStr = AttributeString::create(message, this->getDefaultAttribute());
+        _messages.pushBack(attrStr);
+    }
+    
+    void MessageQueue::pushMessage(CCMessageWindow::AttributeString *attributeString)
+    {
     }
     
     std::string MessageQueue::getCurrentMessage()
     {
-        return _messages.front();
+        auto wholeString = this->getCurrentWholeMessage();
+        return Utils::substringUTF8(wholeString.c_str(), 0, _textIndex);
     }
     
     std::string MessageQueue::getCurrentWholeMessage()
     {
-        return _messages.front();
+        auto attrStr = _messages.front();
+        return attrStr->getText();
     }
     
     void MessageQueue::onMessageFinished()
@@ -117,7 +124,7 @@ namespace CCMessageWindow {
     {
         if (!_messages.empty()) {
             auto message = _messages.front();
-            _currentWholeUnits = Unit::parseUnits(message.c_str());
+            _currentWholeUnits = message->getUnitsByCharacters();
             _remainTime = _textDuration;
             _textIndex = 0;
         }
@@ -138,7 +145,7 @@ namespace CCMessageWindow {
         if (_textIndex >= maxTextLength) {
             // 次のメッセージに
             _endMessage = true;
-            _messages.pop();
+            _messages.erase(0);
             _textIndex = (int)maxTextLength;
             if (_messageDelay > 0) {
                 _remainTime = _messageDelay;
