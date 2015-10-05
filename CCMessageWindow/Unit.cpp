@@ -11,6 +11,8 @@ namespace CCMessageWindow {
     
     bool Unit::init(const char *text, CCMessageWindow::Attribute attribute)
     {
+        _text = text;
+        _attribute = attribute;
         return true;
     }
     

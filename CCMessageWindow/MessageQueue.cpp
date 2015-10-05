@@ -65,6 +65,7 @@ namespace CCMessageWindow {
     
     void MessageQueue::pushMessage(CCMessageWindow::AttributeString *attributeString)
     {
+        _messages.pushBack(attributeString);
     }
     
     std::string MessageQueue::getCurrentMessage()

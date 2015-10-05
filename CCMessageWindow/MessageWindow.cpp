@@ -87,6 +87,7 @@ namespace CCMessageWindow {
     {
         auto text = unit->getText();
         auto label = Label::createWithSystemFont(text.c_str(), unit->getAttribute().fontName, unit->getAttribute().fontSize);
+        label->setColor(unit->getAttribute().color);
         return label;
     }
     

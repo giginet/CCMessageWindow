@@ -44,9 +44,20 @@ namespace CCMessageWindow {
         return nullptr;
     }
     
-    void AttributeString::addUnit(CCMessageWindow::Unit *unit)
+    void AttributeString::appendUnit(CCMessageWindow::Unit *unit)
     {
         _units.pushBack(unit);
+    }
+    
+    void AttributeString::appendString(const char *string, CCMessageWindow::Attribute attribute)
+    {
+        Unit * unit = Unit::create(string, attribute);
+        this->appendUnit(unit);
+    }
+    
+    void AttributeString::appendString(const char *string)
+    {
+        this->appendString(string, Attribute::defaultAttribute());
     }
     
     size_t AttributeString::getLength()
@@ -75,19 +86,30 @@ namespace CCMessageWindow {
         size_t maxLength = this->getLength();
         CCASSERT(index < maxLength, "index must be smaller than length");
         int currentIndex = 0;
-        for (int i = 0; i < _units.size() - 1; ++i) {
-            auto unit = _units.at(i);
-            auto nextUnit = _units.at(i + 1);
-            
-            int nextIndex = currentIndex + (int)nextUnit->getLength();
-            
-            if (currentIndex <= index && index < nextIndex) {
-                int offset = index - currentIndex;
-                std::string character = Utils::substringUTF8(unit->getText().c_str(), offset, 1);
-                Unit * newUnit = Unit::create(character.c_str(), unit->getAttribute());
-                return newUnit;
+        
+        auto createCharacterUnitByOffset = [](Unit *unit, int offset) {
+            std::string character = Utils::substringUTF8(unit->getText().c_str(), offset, 1);
+            Unit * newUnit = Unit::create(character.c_str(), unit->getAttribute());
+            return newUnit;
+        };
+        
+        if (_units.size() == 1) {
+            auto unit = _units.front();
+            int offset = index - currentIndex;
+            return createCharacterUnitByOffset(unit, offset);
+        } else {
+            for (int i = 0; i < _units.size() - 1; ++i) {
+                auto unit = _units.at(i);
+                auto nextUnit = _units.at(i + 1);
+                
+                int nextIndex = currentIndex + (int)nextUnit->getLength();
+                
+                if (currentIndex <= index && index < nextIndex) {
+                    int offset = index - currentIndex;
+                    return createCharacterUnitByOffset(unit, offset);
+                }
+                currentIndex = nextIndex;
             }
-            currentIndex += nextIndex;
         }
         return nullptr;
     }
@@ -105,7 +127,7 @@ namespace CCMessageWindow {
     {
         size_t length = this->getLength();
         UnitVector units;
-        for (int i = 0; i < length; ++length) {
+        for (int i = 0; i < length; ++i) {
             units.pushBack(this->getCharacterUnit(i));
         }
         return std::move(units);

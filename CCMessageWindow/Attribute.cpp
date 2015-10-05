@@ -8,6 +8,13 @@ namespace CCMessageWindow {
     {
     }
     
+    Attribute::Attribute(const Attribute& other)
+    {
+        fontName = other.fontName;
+        fontSize = other.fontSize;
+        color = other.color;
+    }
+    
     Attribute Attribute::defaultAttribute()
     {
         auto attr = Attribute();

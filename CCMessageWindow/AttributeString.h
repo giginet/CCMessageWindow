@@ -21,7 +21,10 @@ namespace CCMessageWindow {
         static AttributeString * create(const char *text, Attribute attribute);
         static AttributeString * create(UnitVector units);
         
-        void addUnit(Unit *unit);
+        void appendUnit(Unit *unit);
+        void appendString(const char * string, Attribute attribute);
+        void appendString(const char * string);
+        
         size_t getLength();
         std::string getCharacter(int index);
         Attribute getAttribute(int index);
