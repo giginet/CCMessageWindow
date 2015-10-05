@@ -1,37 +1,13 @@
-//
-//  Unit.cpp
-//  CCMessageWindow
-//
-//  Created by giginet on 8/2/15.
-//
-//
-
 #include "Unit.h"
-#include <iostream>
-#include <vector>
 
 USING_NS_CC;
 
 namespace CCMessageWindow {
-    
-    Attribute::Attribute()
-    : fontName("Helvetica")
-    , fontSize(64)
-    , color(Color3B::WHITE)
-    {
-    }
-    
-    Attribute Attribute::defaultAttribute()
-    {
-        auto attr = Attribute();
-        return attr;
-    }
-    
     Unit::Unit()
     : _text("")
     {
     }
-
+    
     
     bool Unit::init(const char *text, CCMessageWindow::Attribute attribute)
     {
@@ -75,5 +51,10 @@ namespace CCMessageWindow {
         }
         
         return std::move(units);
+    }
+    
+    size_t Unit::getLength()
+    {
+        return _text.size();
     }
 }

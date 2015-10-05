@@ -1,29 +1,18 @@
 //
-//  Unit.h
-//  CCMessageWindow
+//  Unit.hpp
+//  Commuage
 //
-//  Created by giginet on 8/2/15.
+//  Created by giginet on 10/5/15.
 //
 //
 
-#ifndef __CCMessageWindow__Unit__
-#define __CCMessageWindow__Unit__
+#ifndef Unit_hpp
+#define Unit_hpp
 
-#include "cocos2d.h"
+#include <stdio.h>
+#include "Attribute.h"
 
 namespace CCMessageWindow {
-    
-    class Attribute
-    {
-    public:
-        std::string fontName;
-        cocos2d::Color3B color;
-        float fontSize;
-        Attribute();
-        
-        static Attribute defaultAttribute();
-    };
-    
     class Unit :public cocos2d::Ref
     {
     CC_CONSTRUCTOR_ACCESS:
@@ -36,9 +25,11 @@ namespace CCMessageWindow {
         static Unit *create(const char* text);
         static Unit *create(const char* text, Attribute attribute);
         
+        size_t getLength();
+        
         CC_SYNTHESIZE(std::string, _text, Text);
         CC_SYNTHESIZE(Attribute, _attribute, Attribute);
     };
 }
 
-#endif /* defined(__CCMessageWindow__Unit__) */
+#endif /* Unit_hpp */

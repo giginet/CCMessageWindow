@@ -12,7 +12,6 @@
 #include "Utils.h"
 #include "MessageWindow.h"
 #include "MessageQueue.h"
-#include "Unit.h"
-#include "UnitLabel.h"
+#include "AttributeString.h"
 
 #endif

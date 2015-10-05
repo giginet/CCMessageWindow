@@ -72,12 +72,12 @@ namespace CCMessageWindow {
         float width = this->getContentSize().width;
         for (int i = 0; i < index; ++i) {
             auto unit = units.at(i);
-            x += unit->getFontSize();
+            x += unit->getAttribute().fontSize;
             if (width > 0 && x > width) {
                 // line breal;
                 x = 0;
                 // TODO フォントサイズが全て同じという前提に成り立っている
-                y -= unit->getFontSize();
+                y -= unit->getAttribute().fontSize;
             }
         }
         return Vec2(x, y);
@@ -86,9 +86,7 @@ namespace CCMessageWindow {
     cocos2d::Label * MessageWindow::createLabelWithUnit(CCMessageWindow::Unit *unit)
     {
         auto text = unit->getText();
-        std::string utf8String;
-        StringUtils::UTF16ToUTF8(unit->getText(), utf8String);
-        auto label = Label::createWithSystemFont(utf8String.c_str(), unit->getFontName(), unit->getFontSize());
+        auto label = Label::createWithSystemFont(text.c_str(), unit->getAttribute().fontName, unit->getAttribute().fontSize);
         return label;
     }
     
