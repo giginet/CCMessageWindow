@@ -127,17 +127,14 @@ namespace CCMessageWindow {
     {
         int preIndex = _textIndex;
         long textLength = this->getCurrentMessageLength();
-        int speed = _textSpeed;
-        if (_textIndex + _textSpeed >= textLength) {
-            speed = (int)textLength - _textIndex - 1;
-        }
+        int speed = MIN(this->getTextSpeed(), (int)textLength - _textIndex);
         
         _textIndex += speed;
         std::string substring = Utils::substringUTF8(this->getCurrentWholeMessage().c_str(), preIndex, speed);
         this->onTextDidUpdated(preIndex, substring.c_str());
-        if (_textIndex >= textLength - 1) {
+        if (_textIndex >= textLength) {
             // 次のメッセージに
-            _textIndex = (int)textLength - 1;
+            _textIndex = (int)textLength;
             this->onMessageDidFinished();
             if (this->getmessageUpdateDelay() > 0) {
                 _remainTime = this->getmessageUpdateDelay();
@@ -151,7 +148,7 @@ namespace CCMessageWindow {
     {
         if (this->isAllMessagesFinished()) return true;
         auto length = this->getCurrentMessageLength();
-        return _textIndex == (length - 1);
+        return _textIndex == length;
     }
     
     bool MessageQueue::isAllMessagesFinished()
