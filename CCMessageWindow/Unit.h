@@ -1,11 +1,3 @@
-//
-//  Unit.hpp
-//  Commuage
-//
-//  Created by giginet on 10/5/15.
-//
-//
-
 #ifndef Unit_hpp
 #define Unit_hpp
 
