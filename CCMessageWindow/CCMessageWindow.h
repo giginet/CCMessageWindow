@@ -5,5 +5,9 @@
 #include "MessageWindow.h"
 #include "MessageQueue.h"
 #include "AttributeString.h"
+#include "Event.h"
+
+extern const char* CCMessageWindowOnTextDidUpdatedEventName;
+extern const char* CCMessageWindowOnMessageDidFinishedEventName;
 
 #endif

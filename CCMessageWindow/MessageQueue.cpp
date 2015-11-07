@@ -1,9 +1,13 @@
 #include "MessageQueue.h"
 #include "MessageWindow.h"
-#include "Utils.h"
 #include <sstream>
+#include "Utils.h"
+#include "Event.h"
 
 USING_NS_CC;
+
+const char* CCMessageWindowOnTextDidUpdatedEventName = "CCMessageWindowOnTextDidUpdated";
+const char* CCMessageWindowOnMessageDidFinishedEventName = "CCMessageWindowOnMessageDidFinished";
 
 namespace CCMessageWindow {
     MessageQueue::MessageQueue()
@@ -15,7 +19,6 @@ namespace CCMessageWindow {
     , _isAutoSeekEnabled(true)
     , _enabled(false)
     , _label(nullptr)
-    , _messageWindow(nullptr)
     {
         _defaultAttribute = Attribute::defaultAttribute();
     }
@@ -75,20 +78,20 @@ namespace CCMessageWindow {
         return attrStr->getText();
     }
     
-    void MessageQueue::onMessageWillFinish()
+    void MessageQueue::onMessageDidFinished()
     {
-        auto callback = _messageWindow->getOnMessageWillFinishCallback();
-        if (callback) {
-            callback(_messageWindow, this->getCurrentWholeMessage());
-        }
+        auto event = EventMessageFinished(CCMessageWindowOnMessageDidFinishedEventName);
+        event.setUserData(this);
+        cocos2d::Director::getInstance()->getEventDispatcher()->dispatchEvent(&event);
     }
     
-    void MessageQueue::onTextUpdated(int startedIndex, const char *updatedString)
+    void MessageQueue::onTextDidUpdated(int startedIndex, const char *updatedString)
     {
-        auto callback = _messageWindow->getOnTextUpdatedCallback();
-        if (callback) {
-            callback(_messageWindow, startedIndex, updatedString);
-        }
+        auto event = EventTextUpdated(CCMessageWindowOnTextDidUpdatedEventName);
+        event.startedIndex = startedIndex;
+        event.updatedString = updatedString;
+        event.setUserData(this);
+        cocos2d::Director::getInstance()->getEventDispatcher()->dispatchEvent(&event);
     }
     
     cocos2d::Vector<Unit *> MessageQueue::getCurrentUnits()
@@ -131,11 +134,11 @@ namespace CCMessageWindow {
         
         _textIndex += speed;
         std::string substring = Utils::substringUTF8(this->getCurrentWholeMessage().c_str(), preIndex, speed);
-        this->onTextUpdated(preIndex, substring.c_str());
+        this->onTextDidUpdated(preIndex, substring.c_str());
         if (_textIndex >= textLength - 1) {
             // 次のメッセージに
             _textIndex = (int)textLength - 1;
-            this->onMessageWillFinish();
+            this->onMessageDidFinished();
             if (this->getmessageUpdateDelay() > 0) {
                 _remainTime = this->getmessageUpdateDelay();
             }

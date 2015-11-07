@@ -6,9 +6,6 @@
 #include "AttributeString.h"
 
 namespace CCMessageWindow {
-    
-    class MessageWindow;
-    
     class MessageQueue :public cocos2d::Ref {
     CC_CONSTRUCTOR_ACCESS:
         MessageQueue();
@@ -16,23 +13,13 @@ namespace CCMessageWindow {
         bool init();
         CREATE_FUNC(MessageQueue);
     private:
-        void onMessageWillFinish();
-        void onTextUpdated(int startedIndex, const char* updatedString);
+        void onMessageDidFinished();
+        void onTextDidUpdated(int startedIndex, const char* updatedString);
         void updateText();
-        
         bool _isAutoSeekEnabled;
         
         cocos2d::Vector<Unit *> _currentWholeUnits;
         long getCurrentMessageLength();
-        
-        // unsafe_unretained
-        MessageWindow *_messageWindow;
-        
-        void setMessageWindow(MessageWindow *val)
-        {
-            _messageWindow = val;
-        }
-        
     public:
         void pushMessage(const char* message);
         void pushMessage(AttributeString * attributeString);
@@ -71,8 +58,6 @@ namespace CCMessageWindow {
         CC_SYNTHESIZE_READONLY(int, _textIndex, TextIndex);
         CC_SYNTHESIZE_PASS_BY_REF(cocos2d::Vector<AttributeString *>, _messages, Messages);
         CC_SYNTHESIZE_RETAIN(cocos2d::Label *, _label, Label);
-        
-        friend MessageWindow;
     };
 }
 
