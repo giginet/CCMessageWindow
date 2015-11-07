@@ -1,11 +1,3 @@
-//
-//  MessageQueue.h
-//  CCMessageWindow
-//
-//  Created by giginet on 2012/10/20.
-//
-//
-
 #ifndef __CCMessageWindow__MessageQueue__
 #define __CCMessageWindow__MessageQueue__
 
@@ -26,11 +18,8 @@ namespace CCMessageWindow {
     private:
         void onMessageWillFinish();
         void onTextUpdated(int startedIndex, const char* updatedString);
-        void updateNextMessage();
-        void updateNextText();
+        void updateText();
         
-        float _remainTime;
-        bool _endMessage;
         bool _isAutoSeekEnabled;
         
         cocos2d::Vector<Unit *> _currentWholeUnits;
@@ -54,8 +43,8 @@ namespace CCMessageWindow {
         
         void finishMessage();
         
-        bool isEndOfMessage();
-        bool isEnd();
+        bool isCurrentMessageFinished();
+        bool isAllMessagesFinished();
         void update(float dt);
         
         void start();
@@ -74,8 +63,9 @@ namespace CCMessageWindow {
         }
         
         CC_SYNTHESIZE(int, _textSpeed, TextSpeed);
-        CC_SYNTHESIZE(float, _textDuration, TextDuration);
-        CC_SYNTHESIZE(float, _messageDelay, MessageDelay);
+        CC_SYNTHESIZE_READONLY(float, _remainTime, RemainTime);
+        CC_SYNTHESIZE(float, _textUpdateDelay, textUpdateDelay);
+        CC_SYNTHESIZE(float, _messageUpdateDelay, messageUpdateDelay);
         CC_SYNTHESIZE(bool, _enabled, Enabled);
         CC_SYNTHESIZE(Attribute, _defaultAttribute, DefaultAttribute);
         CC_SYNTHESIZE_READONLY(int, _textIndex, TextIndex);

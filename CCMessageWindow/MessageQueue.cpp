@@ -10,9 +10,8 @@ namespace CCMessageWindow {
     : _textSpeed(1)
     , _textIndex(0)
     , _remainTime(0)
-    , _textDuration(0.2)
-    , _messageDelay(1.0)
-    , _endMessage(false)
+    , _textUpdateDelay(0.2)
+    , _messageUpdateDelay(1.0)
     , _isAutoSeekEnabled(true)
     , _enabled(false)
     , _label(nullptr)
@@ -22,29 +21,33 @@ namespace CCMessageWindow {
     }
     
     MessageQueue::~MessageQueue()
-    {        
+    {
+        auto scheduler = Director::getInstance()->getScheduler();
+        scheduler->unscheduleUpdate(this);
         CC_SAFE_RELEASE_NULL(_label);
     }
     
     bool MessageQueue::init()
     {
-        auto scheduler = Director::getInstance()->getScheduler();
-        scheduler->scheduleUpdate(this, 0, false);
         return true;
     }
     
     void MessageQueue::update(float dt)
     {
         if (!_enabled) return;
+        if (_messages.empty()) return;
+        std::string currentMessage = this->getCurrentWholeMessage();
         _remainTime -= dt;
-        if (_remainTime < 0) {
-            if (_endMessage) {
-                this->onMessageWillFinish();
-            } else if (!_messages.empty()) {
-                // 次のテキスト
-                this->updateNextText();
+        if (_remainTime <= 0) {
+            _remainTime = 0;
+            if (this->isCurrentMessageFinished()) {
+                // 次のメッセージ
+                if (_isAutoSeekEnabled) {
+                    this->seekMessage();
+                }
             } else {
-                
+                // 次のテキスト
+                updateText();
             }
         }
     }
@@ -78,9 +81,6 @@ namespace CCMessageWindow {
         if (callback) {
             callback(_messageWindow, this->getCurrentWholeMessage());
         }
-        if (_isAutoSeekEnabled) {
-            this->seekMessage();
-        }
     }
     
     void MessageQueue::onTextUpdated(int startedIndex, const char *updatedString)
@@ -102,75 +102,76 @@ namespace CCMessageWindow {
     
     void MessageQueue::start()
     {
+        auto scheduler = Director::getInstance()->getScheduler();
+        scheduler->scheduleUpdate(this, 0, false);
         _enabled = true;
         if (_messages.size() > 0 && _currentWholeUnits.empty()) {
-            this->updateNextMessage();
+            auto nextMessage = _messages.front();
+            _currentWholeUnits = nextMessage->getUnitsByCharacters();
+            _remainTime = _textUpdateDelay;
+            _textIndex = 0;
         }
     }
     
     void MessageQueue::pause()
     {
+        auto scheduler = Director::getInstance()->getScheduler();
+        scheduler->pauseTarget(this);
         _enabled = false;
     }
     
-    void MessageQueue::updateNextMessage()
-    {
-        if (!_messages.empty()) {
-            auto message = _messages.front();
-            _currentWholeUnits = message->getUnitsByCharacters();
-            _remainTime = _textDuration;
-            _textIndex = 0;
-        }
-    }
-    
-    void MessageQueue::updateNextText()
+    void MessageQueue::updateText()
     {
         int preIndex = _textIndex;
-        long maxTextLength = this->getCurrentMessageLength();
+        long textLength = this->getCurrentMessageLength();
         int speed = _textSpeed;
-        if (_textIndex + _textSpeed > maxTextLength) {
-            speed = (int)maxTextLength - _textIndex;
+        if (_textIndex + _textSpeed >= textLength) {
+            speed = (int)textLength - _textIndex - 1;
         }
         
         _textIndex += speed;
         std::string substring = Utils::substringUTF8(this->getCurrentWholeMessage().c_str(), preIndex, speed);
         this->onTextUpdated(preIndex, substring.c_str());
-        if (_textIndex >= maxTextLength) {
+        if (_textIndex >= textLength - 1) {
             // 次のメッセージに
-            _endMessage = true;
-            _textIndex = (int)maxTextLength;
-            if (_messageDelay > 0) {
-                _remainTime = _messageDelay;
+            _textIndex = (int)textLength - 1;
+            this->onMessageWillFinish();
+            if (this->getmessageUpdateDelay() > 0) {
+                _remainTime = this->getmessageUpdateDelay();
             }
         } else {
-            _remainTime = _textDuration;
+            _remainTime = this->gettextUpdateDelay();
         }
     }
     
-    bool MessageQueue::isEndOfMessage()
+    bool MessageQueue::isCurrentMessageFinished()
     {
+        if (this->isAllMessagesFinished()) return true;
         auto length = this->getCurrentMessageLength();
         return _textIndex == (length - 1);
     }
     
-    bool MessageQueue::isEnd()
+    bool MessageQueue::isAllMessagesFinished()
     {
         return _messages.empty();
     }
     
     void MessageQueue::seekMessage()
     {
-        if (!_messages.empty()) {
-            _endMessage = false;
+        if (!this->isAllMessagesFinished()) {
             _messages.erase(0);
-            // 次のメッセージ
-            this->updateNextMessage();
+            
+            auto nextMessage = _messages.front();
+            _currentWholeUnits = nextMessage->getUnitsByCharacters();
+            _remainTime = _textUpdateDelay;
+            _textIndex = 0;
         }
     }
     
     void MessageQueue::clear()
     {
         _messages.clear();
+        _currentWholeUnits.clear();
         _enabled = false;
         _textIndex = 0;
         _remainTime = 0;
