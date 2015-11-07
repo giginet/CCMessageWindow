@@ -34,14 +34,16 @@ namespace CCMessageWindow {
         bool isAllMessagesFinished();
         void update(float dt);
         
+        void endMessage();
+        
         void start();
         void pause();
         void seekMessage();
         void clear();
         
-        void setIsAutoSeekEnabled(bool val)
+        void setAutoSeekEnabled(bool val)
         {
-            _isAutoSeekEnabled = true;
+            _isAutoSeekEnabled = val;
         }
         
         bool isAutoSeekEnabled()

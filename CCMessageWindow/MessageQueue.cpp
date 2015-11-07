@@ -16,7 +16,7 @@ namespace CCMessageWindow {
     , _remainTime(0)
     , _textUpdateDelay(0.2)
     , _messageUpdateDelay(1.0)
-    , _isAutoSeekEnabled(true)
+    , _isAutoSeekEnabled(false)
     , _enabled(false)
     , _label(nullptr)
     {
@@ -33,6 +33,17 @@ namespace CCMessageWindow {
     bool MessageQueue::init()
     {
         return true;
+    }
+    
+    void MessageQueue::endMessage()
+    {
+        if (!this->isAllMessagesFinished()) {
+            _textIndex = (int)this->getCurrentMessageLength();
+            this->onMessageDidFinished();
+            if (this->getmessageUpdateDelay() > 0) {
+                _remainTime = this->getmessageUpdateDelay();
+            }
+        }
     }
     
     void MessageQueue::update(float dt)
