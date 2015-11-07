@@ -24,7 +24,7 @@ namespace CCMessageWindow {
         bool init();
         CREATE_FUNC(MessageQueue);
     private:
-        void onMessageFinished();
+        void onMessageWillFinish();
         void onTextUpdated(int startedIndex, const char* updatedString);
         void updateNextMessage();
         void updateNextText();
@@ -60,7 +60,8 @@ namespace CCMessageWindow {
         
         void start();
         void pause();
-        void nextMessage();
+        void seekMessage();
+        void clear();
         
         void setIsAutoSeekEnabled(bool val)
         {

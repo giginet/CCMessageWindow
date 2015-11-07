@@ -1,11 +1,3 @@
-//
-//  MessageQueue.cpp
-//  VOXCHRONICLE
-//
-//  Created by giginet on 2012/10/20.
-//
-//
-
 #include "MessageQueue.h"
 #include "MessageWindow.h"
 #include "Utils.h"
@@ -47,7 +39,7 @@ namespace CCMessageWindow {
         _remainTime -= dt;
         if (_remainTime < 0) {
             if (_endMessage) {
-                this->onMessageFinished();
+                this->onMessageWillFinish();
             } else if (!_messages.empty()) {
                 // 次のテキスト
                 this->updateNextText();
@@ -80,14 +72,14 @@ namespace CCMessageWindow {
         return attrStr->getText();
     }
     
-    void MessageQueue::onMessageFinished()
+    void MessageQueue::onMessageWillFinish()
     {
-        auto callback = _messageWindow->getOnMessageFinishedCallback();
+        auto callback = _messageWindow->getOnMessageWillFinishCallback();
         if (callback) {
             callback(_messageWindow, this->getCurrentWholeMessage());
         }
         if (_isAutoSeekEnabled) {
-            this->nextMessage();
+            this->seekMessage();
         }
     }
     
@@ -146,7 +138,6 @@ namespace CCMessageWindow {
         if (_textIndex >= maxTextLength) {
             // 次のメッセージに
             _endMessage = true;
-            _messages.erase(0);
             _textIndex = (int)maxTextLength;
             if (_messageDelay > 0) {
                 _remainTime = _messageDelay;
@@ -167,11 +158,22 @@ namespace CCMessageWindow {
         return _messages.empty();
     }
     
-    void MessageQueue::nextMessage()
+    void MessageQueue::seekMessage()
     {
-        _endMessage = false;
-        // 次のメッセージ
-        this->updateNextMessage();
+        if (!_messages.empty()) {
+            _endMessage = false;
+            _messages.erase(0);
+            // 次のメッセージ
+            this->updateNextMessage();
+        }
+    }
+    
+    void MessageQueue::clear()
+    {
+        _messages.clear();
+        _enabled = false;
+        _textIndex = 0;
+        _remainTime = 0;
     }
     
     long MessageQueue::getCurrentMessageLength()

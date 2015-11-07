@@ -15,7 +15,7 @@ namespace CCMessageWindow {
     MessageWindow::MessageWindow()
     : _queue(nullptr)
     , _onTextUpdatedCallback(nullptr)
-    , _onMessageFinishedCallback(nullptr)
+    , _onMessageWillFinishCallback(nullptr)
     {
         
     }
