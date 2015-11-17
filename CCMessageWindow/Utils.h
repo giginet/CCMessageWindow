@@ -1,8 +1,7 @@
 #ifndef StringUtils_h
 #define StringUtils_h
 
-#include <stdio.h>
-#include <string.h>
+#include "cocos2d.h"
 
 namespace CCMessageWindow {
     class Utils {
